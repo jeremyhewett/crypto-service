@@ -1,0 +1,35 @@
+{
+  "name": "crypto-service",
+  "version": "1.0.0",
+  "description": "A service for current and daily cryptocurrency prices",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc && tsc --project ./test/tsconfig.json --noEmit",
+    "watch": "tsc --watch",
+    "start": "export $(xargs < ./.env) && npm run build && node ./dist/index.js",
+    "db": " docker run --name postgres -p 5678:5432 -e POSTGRES_PASSWORD=password -d postgres",
+    "test": "export $(xargs < ./.env) && node --import tsx --test ./test/*.test.ts"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeremyhewett/crypto-service.git"
+  },
+  "author": "Jeremy Hewett",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/jeremyhewett/crypto-service/issues"
+  },
+  "homepage": "https://github.com/jeremyhewett/crypto-service#readme",
+  "devDependencies": {
+    "@types/express": "^5.0.0",
+    "@types/pg": "^8.11.10",
+    "dotenv": "^16.4.5",
+    "light-my-request": "^6.3.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3"
+  },
+  "dependencies": {
+    "express": "^4.21.1",
+    "pg": "^8.13.1"
+  }
+}
