@@ -1,8 +1,8 @@
-import { Coin, fetchCoins, fetchPrices, fetchVsCurrencies } from './coin-gecko-service';
+import { Coin, fetchCoins, fetchPrices, fetchVsCurrencies } from './coin-gecko-api';
 import { cryptoExchangeId } from '../config';
 import { deleteStalePrices, insertPrices, PriceEntry, updateStdDeviations } from '../database/repository';
 
-async function initialize(): Promise<{ coins: Coin[], currencies: string[] }> {
+export async function initialize(): Promise<{ coins: Coin[], currencies: string[] }> {
   const coins = await fetchCoins(cryptoExchangeId);
   const currencies = await fetchVsCurrencies();
   console.log('Syncing prices for');
@@ -11,8 +11,8 @@ async function initialize(): Promise<{ coins: Coin[], currencies: string[] }> {
   return { coins, currencies };
 }
 
-async function syncPrices(coins: Coin[], currencies: string[]) {
-  console.log('Starting sync job execution...');
+export async function syncPrices(coins: Coin[], currencies: string[]) {
+  console.log('Starting data sync...');
   const prices = await fetchPrices(coins, currencies);
 
   const priceRows: PriceEntry[] = [];
@@ -25,10 +25,5 @@ async function syncPrices(coins: Coin[], currencies: string[]) {
   await insertPrices(priceRows);
   await updateStdDeviations();
   await deleteStalePrices();
-  console.log('Sync job execution complete.');
+  console.log('Data sync complete.');
 }
-
-initialize() .then(({ coins, currencies }) => {
-  syncPrices(coins, currencies);
-  setInterval(() => syncPrices(coins, currencies), 60000);
-});

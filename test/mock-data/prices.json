@@ -1,0 +1,11 @@
+[
+  ["eth", "eur", 0.1],
+  ["bnt", "btc", 5],
+  ["btc", "btc", 1],
+  ["eth", "eur", 0.2],
+  ["bnt", "btc", 8],
+  ["btc", "btc", 1],
+  ["eth", "eur", 0.3],
+  ["bnt", "btc", 3],
+  ["btc", "btc", 1]
+]

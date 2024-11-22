@@ -5,10 +5,10 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc && tsc --project ./test/tsconfig.json --noEmit",
-    "createSchema": "tsc && export $(xargs < ./.env) && node ./dist/database/create-schema.js",
-    "syncJob": "tsc && export $(xargs < ./.env) && node ./dist/sync-job.js",
+    "createSchema": "tsc && export $(xargs < ./.env) && node -e 'require(\"./dist/database/create-schema\").exec()'",
+    "syncService": "tsc && export $(xargs < ./.env) && node ./dist/sync-service/index.js",
     "watch": "tsc --watch",
-    "start": "export $(xargs < ./.env) && npm run build && node ./dist/index.js",
+    "start": "export $(xargs < ./.env) && npm run build && node ./dist/server/index.js",
     "db": " docker run --name postgres -p 5678:5432 -e POSTGRES_PASSWORD=password -d postgres",
     "test": "export $(xargs < ./.env) && node --import tsx --test ./test/*.test.ts"
   },

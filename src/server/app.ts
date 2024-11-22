@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import { selectPrices, selectVolatility } from '../database/repository';
-import { getConnectionPool } from '../database/pg-pool';
+import { getConnection } from '../database/pg-pool';
 
 export async function createApp() {
   const app = express();
@@ -46,5 +46,5 @@ export async function createApp() {
 }
 
 export async function destroyApp() {
-  await getConnectionPool().end();
+  await getConnection().end();
 }

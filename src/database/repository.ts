@@ -1,4 +1,4 @@
-import { getConnectionPool } from './pg-pool';
+import { getConnection } from './pg-pool';
 import { timeWindow } from '../config';
 
 export type PriceEntry = [string, string, number];
@@ -17,13 +17,13 @@ export async function insertPrices(prices: PriceEntry[]) {
   prices.forEach(([baseSymbol, targetSymbol, price]) => {
     params.push(baseSymbol, targetSymbol, price);
   });
-  await getConnectionPool().query(query, params);
+  await getConnection().query(query, params);
 }
 
 export async function updateStdDeviations(): Promise<void> {
   console.log(`${new Date().toISOString()} Refreshing std_deviations view`);
   const t0 = Date.now();
-  await getConnectionPool().query('REFRESH MATERIALIZED VIEW CONCURRENTLY std_deviations');
+  await getConnection().query('REFRESH MATERIALIZED VIEW CONCURRENTLY std_deviations');
   const t1 = Date.now();
   console.log(`${new Date().toISOString()} Refreshed std_deviations view in ${t1 - t0} ms`);
 }
@@ -31,7 +31,7 @@ export async function updateStdDeviations(): Promise<void> {
 export async function deleteStalePrices(): Promise<void> {
   console.log('Deleting stale prices');
   const query = `DELETE FROM prices WHERE timestamp < NOW() - INTERVAL '${timeWindow}'`;
-  await getConnectionPool().query(query);
+  await getConnection().query(query);
 }
 
 const selectPricesQuery = `
@@ -47,8 +47,8 @@ export interface Price {
   timestamp: Date;
 }
 
-export async function selectPrices(baseSymbol: string, targetSymbol: string, limit: number | null): Promise<Price[]> {
-  const result = await getConnectionPool().query(selectPricesQuery, [baseSymbol, targetSymbol, limit]);
+export async function selectPrices(baseSymbol: string, targetSymbol: string, limit: number | null = null): Promise<Price[]> {
+  const result = await getConnection().query(selectPricesQuery, [baseSymbol, targetSymbol, limit]);
   return result.rows;
 }
 
@@ -77,7 +77,7 @@ export interface Volatility {
 }
 
 export async function selectVolatility(baseSymbol: string, targetSymbol: string): Promise<Volatility> {
-  const result = await getConnectionPool().query(selectPricesWithVolatilityQuery, [baseSymbol, targetSymbol]);
+  const result = await getConnection().query(selectPricesWithVolatilityQuery, [baseSymbol, targetSymbol]);
   const row = result.rows.length === 1 ? result.rows[0] : undefined;
   return row ? { ...row, volatility_rank: parseInt(row.volatility_rank) } : undefined;
 }

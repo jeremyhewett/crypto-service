@@ -1,4 +1,4 @@
-import { getConnectionPool } from './pg-pool';
+import { getConnection } from './pg-pool';
 import { timeWindow } from '../config';
 
 const createPricesTableQuery = `
@@ -6,7 +6,7 @@ const createPricesTableQuery = `
     "base_symbol" VARCHAR NOT NULL,
     "target_symbol" VARCHAR NOT NULL,
     "price" REAL NOT NULL,
-    "created_at" TIMESTAMP NOT NULL
+    "timestamp" TIMESTAMP NOT NULL
   );
   
   CREATE INDEX base_symbol_idx ON prices (base_symbol);
@@ -14,7 +14,7 @@ const createPricesTableQuery = `
 `;
 
 async function createPricesTable(): Promise<void> {
-  await getConnectionPool().query(createPricesTableQuery);
+  await getConnection().query(createPricesTableQuery);
 }
 
 const createStdDeviationsViewQuery = `
@@ -23,9 +23,9 @@ const createStdDeviationsViewQuery = `
         base_symbol,
         target_symbol,
         stddev(price) as std_deviation,
-        CURRENT_TIMESTAMP AS updated_at
+        CURRENT_TIMESTAMP AS timestamp
       FROM prices
-      WHERE created_at BETWEEN NOW() - INTERVAL '${timeWindow}' AND NOW()
+      WHERE timestamp BETWEEN NOW() - INTERVAL '${timeWindow}' AND NOW()
       GROUP BY
         base_symbol,
         target_symbol;
@@ -34,10 +34,16 @@ const createStdDeviationsViewQuery = `
 `;
 
 async function createStdDeviationsView(): Promise<void> {
-  await getConnectionPool().query(createStdDeviationsViewQuery);
+  await getConnection().query(createStdDeviationsViewQuery);
 }
 
-createPricesTable()
-  .then(() => createStdDeviationsView())
-  .then(() => console.log('Successfully created'))
-  .then(() => getConnectionPool().end());
+export async function createSchema() {
+  await createPricesTable();
+  await createStdDeviationsView();
+  console.log('Successfully created schema');
+}
+
+export async function exec() {
+  await createSchema();
+  await getConnection().end();
+}

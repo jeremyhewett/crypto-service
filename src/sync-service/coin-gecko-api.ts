@@ -7,7 +7,7 @@ const headers = {
 }
 
 interface Ticker {
-  base: string; // Uppercase symbol
+  base: string; // Uppercase coin symbol
   coin_id: string;
 }
 
