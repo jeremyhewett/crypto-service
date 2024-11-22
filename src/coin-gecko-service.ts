@@ -15,8 +15,8 @@ interface Exchange {
   tickers: Ticker[];
 }
 
-interface Coin {
-  id: string;
+export interface Coin {
+  coin_id: string;
   symbol: string;
 }
 
@@ -32,7 +32,7 @@ export async function fetchCoins(exchangeId: string): Promise<Coin[]> {
   const exchange = await response.json() as Exchange;
   const coinsById: { [coindId: string]: Coin } = {};
   for (const ticker of exchange.tickers) {
-    coinsById[ticker.coin_id] = { id: ticker.coin_id, symbol: ticker.base.toLowerCase() };
+    coinsById[ticker.coin_id] = { coin_id: ticker.coin_id, symbol: ticker.base.toLowerCase() };
   }
   return Object.values(coinsById);
 }
@@ -46,14 +46,14 @@ export async function fetchVsCurrencies(): Promise<string[]> {
 }
 
 export async function fetchPrices(coins: Coin[], vsCurrencies: string[]): Promise<PriceMap> {
-  const idsParam = encodeURIComponent(coins.map((coin) => coin.id).join(','));
+  const idsParam = encodeURIComponent(coins.map((coin) => coin.coin_id).join(','));
   const currenciesParam = encodeURIComponent(vsCurrencies.join(','));
   const response = await fetch(`${baseUrl}/simple/price?ids=${idsParam}&vs_currencies=${currenciesParam}`, { headers });
   if (!response.ok) {
     throw new Error(await response.text());
   }
   const priceData = await response.json() as { [coinId: string]: { [symbol: string]: number; } };
-  const symbolsByCoinId = Object.fromEntries(coins.map((coin) => [coin.id, coin.symbol]));
+  const symbolsByCoinId = Object.fromEntries(coins.map((coin) => [coin.coin_id, coin.symbol]));
   const prices: PriceMap = {};
   for (const entry in priceData) {
     prices[symbolsByCoinId[entry]] = priceData[entry];

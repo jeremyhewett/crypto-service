@@ -4,7 +4,7 @@ export class PriceResponse {
   base: string;
   target: string;
   price: number;
-  stddev: number;
+  std_deviation: number;
   rank: number;
   updated_at: Date;
 
@@ -12,7 +12,7 @@ export class PriceResponse {
     this.base = price.base_symbol;
     this.target = price.target_symbol;
     this.price = price.price;
-    this.stddev = price.stddev;
+    this.std_deviation = price.std_deviation;
     this.rank = price.rank;
     this.updated_at = price.created_at;
   }

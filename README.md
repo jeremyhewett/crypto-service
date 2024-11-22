@@ -22,6 +22,8 @@
 - DB migrations
 - Initialization
   - With only a single entry for each pair, we get no results, so tests fail the first time.
+- Maybe clear existing data when sync job starts?
+  - Unless having a gap in the data is ok.
 
 ### Concerns
 
@@ -33,6 +35,10 @@
 
 - What happens if coins or currencies get removed and we're still requesting their prices?
 
-- 
+- Putting the API Key in the repo
+
+  - Would usually use a secret, loaded at runtime
+
+- Once the 24-hour time-window is full, there will be a moment during sync where there will be an extra 
 
   

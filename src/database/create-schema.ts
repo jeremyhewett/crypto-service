@@ -21,8 +21,8 @@ CREATE MATERIALIZED VIEW std_deviations AS
   SELECT
       base_symbol,
       target_symbol,
-      stddev(price),
-      CURRENT_TIMESTAMP AS created_at
+      stddev(price) as std_deviation,
+      CURRENT_TIMESTAMP AS updated_at
     FROM prices
     WHERE created_at BETWEEN NOW() - INTERVAL '24 HOURS' AND NOW()
     GROUP BY
@@ -38,4 +38,5 @@ async function createStdDeviationsView(): Promise<void> {
 
 createPricesTable()
   .then(() => createStdDeviationsView())
-  .then(() => console.log('Successfully created'));
+  .then(() => console.log('Successfully created'))
+  .then(() => getConnectionPool().end());

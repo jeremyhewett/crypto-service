@@ -7,13 +7,6 @@ import { PriceResponse } from './PriceResponse';
 export async function createApp() {
   const app = express();
 
-  const coins = await fetchCoins(cryptoExchangeId);
-  const currencies = await fetchVsCurrencies();
-  const prices = await fetchPrices(coins, currencies);
-
-  await insertPrices(prices);
-  await updateStdDeviations();
-
   app.get('/price', async (req, res) => {
     const base = req.query['base'];
     const target = req.query['target'];
