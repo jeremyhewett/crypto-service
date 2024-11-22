@@ -1,4 +1,5 @@
 import { getConnectionPool } from '../pg-pool';
+import { timeWindow } from '../config';
 
 const createPricesTableQuery = `
 CREATE TABLE IF NOT EXISTS "prices" (
@@ -24,7 +25,7 @@ CREATE MATERIALIZED VIEW std_deviations AS
       stddev(price) as std_deviation,
       CURRENT_TIMESTAMP AS updated_at
     FROM prices
-    WHERE created_at BETWEEN NOW() - INTERVAL '24 HOURS' AND NOW()
+    WHERE created_at BETWEEN NOW() - INTERVAL '${timeWindow}' AND NOW()
     GROUP BY
       base_symbol,
       target_symbol;

@@ -1,5 +1,6 @@
 import { getConnectionPool } from './pg-pool';
-import { Coin, PriceMap } from './coin-gecko-service';
+import { PriceMap } from './coin-gecko-service';
+import { timeWindow } from './config';
 
 export async function insertPrices(prices: PriceMap) {
   const priceRows: [string, string, number][] = [];
@@ -30,6 +31,12 @@ export async function updateStdDeviations(): Promise<void> {
   await getConnectionPool().query('REFRESH MATERIALIZED VIEW CONCURRENTLY std_deviations');
   const t1 = Date.now();
   console.log(`${new Date().toISOString()} Refreshed std_deviations view in ${t1 - t0} ms`);
+}
+
+export async function deleteStalePrices(): Promise<void> {
+  console.log('Deleting stale prices');
+  const query = `DELETE FROM prices WHERE created_at < NOW() - INTERVAL '${timeWindow}'`;
+  await getConnectionPool().query(query);
 }
 
 const selectPriceWithRankingQuery = `
