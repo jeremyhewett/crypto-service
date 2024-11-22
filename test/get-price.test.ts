@@ -19,7 +19,7 @@ describe('GET /price', () => {
     const response = await inject(app, { method: 'GET', url: `/price?base=${base}&target=${target}` });
     assert(response.statusCode === 200);
     const body = JSON.parse(response.body);
-    assert.deepStrictEqual(body, { base: 'btc', target: 'btc', price: 1 });
+    assert.deepEqual(body, { base, target, price: 1, stddev: 0, updated_at: body.updated_at });
   });
 
 });

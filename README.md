@@ -19,7 +19,9 @@
 
 ### Todo's
 
-- 
+- DB migrations
+- Initialization
+  - With only a single entry for each pair, we get no results, so tests fail the first time.
 
 ### Concerns
 
@@ -30,5 +32,7 @@
   - Rate limiting?
 
 - What happens if coins or currencies get removed and we're still requesting their prices?
+
+- 
 
   

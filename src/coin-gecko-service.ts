@@ -20,7 +20,7 @@ interface Coin {
   symbol: string;
 }
 
-interface Prices {
+export interface PriceMap {
   [symbol: string]: { [symbol: string]: number };
 }
 
@@ -45,7 +45,7 @@ export async function fetchVsCurrencies(): Promise<string[]> {
   return await response.json();
 }
 
-export async function fetchPrices(coins: Coin[], vsCurrencies: string[]): Promise<Prices> {
+export async function fetchPrices(coins: Coin[], vsCurrencies: string[]): Promise<PriceMap> {
   const idsParam = encodeURIComponent(coins.map((coin) => coin.id).join(','));
   const currenciesParam = encodeURIComponent(vsCurrencies.join(','));
   const response = await fetch(`${baseUrl}/simple/price?ids=${idsParam}&vs_currencies=${currenciesParam}`, { headers });
@@ -54,7 +54,7 @@ export async function fetchPrices(coins: Coin[], vsCurrencies: string[]): Promis
   }
   const priceData = await response.json() as { [coinId: string]: { [symbol: string]: number; } };
   const symbolsByCoinId = Object.fromEntries(coins.map((coin) => [coin.id, coin.symbol]));
-  const prices: Prices = {};
+  const prices: PriceMap = {};
   for (const entry in priceData) {
     prices[symbolsByCoinId[entry]] = priceData[entry];
   }
