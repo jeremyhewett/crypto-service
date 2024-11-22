@@ -4,7 +4,7 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert';
 
 import { cryptoExchangeId } from '../src/config';
-import { fetchCoins, fetchVsCurrencies, fetchPrices, Coin } from '../src/coin-gecko-service';
+import { fetchCoins, fetchVsCurrencies, fetchPrices, Coin } from '../src/sync-job/coin-gecko-service';
 
 describe('Coin Gecko Service', () => {
   describe('fetchCoins', () => {

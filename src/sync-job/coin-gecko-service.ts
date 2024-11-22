@@ -1,4 +1,4 @@
-import { apiKey } from './config';
+import { apiKey } from '../config';
 
 const baseUrl = 'https://api.coingecko.com/api/v3';
 const headers = {
