@@ -23,7 +23,7 @@ export async function insertPrices(prices: PriceEntry[]) {
 export async function updateStdDeviations(): Promise<void> {
   console.log(`${new Date().toISOString()} Refreshing std_deviations view`);
   const t0 = Date.now();
-  await getConnection().query('REFRESH MATERIALIZED VIEW CONCURRENTLY std_deviations');
+  await getConnection().query('REFRESH MATERIALIZED VIEW std_deviations');
   const t1 = Date.now();
   console.log(`${new Date().toISOString()} Refreshed std_deviations view in ${t1 - t0} ms`);
 }
