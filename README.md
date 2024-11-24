@@ -17,32 +17,32 @@ Run `npm install` in the root of the repository.
 
 **Run Application**
 
-1. Start database
-   `npm run db` (This will start a docker container running postgres exposed on port 5678.)
-   Otherwise, to use an existing postgres instance, configure connection environment variables in `.env`
-2. Create schema
-   `npm run createSchema`
+1. Start database  
+   `npm run db`  
+   This will start a docker container running postgres exposed on port 5678.  
+   Otherwise, to use an existing postgres instance, configure connection environment variables in `.env` file.
+2. Create schema  
+   `npm run createSchema`  
    This will create the required tables/views in the postgres database.
-3. Start data sync service
-   `npm run syncService`
+3. Start data sync service  
+   `npm run syncService`  
    This will start a Node process to sync data from CoinGecko to the database.
-4. Start web server
-   `npm start`
+4. Start web server  
+   `npm start`  
    This will start a Node web server listening on port `3000` (port can be changed in `.env`).
 
 **Run Tests**
 
-1. Start database (if not already running)
+1. Start database (if not already running)  
    `npm run db`
-2. Run tests
+2. Run tests  
    `npm test`
 
 Each test file will create a temporary database and drop it after the tests complete. This keeps test data isolated and predictable. The `sync-service` tests allow actual API requests to CoinGecko rather than intercepting and responding with mock responses. This is intentional to validate that our assumptions about the API are still valid.
 
 ### Requesting Data
 
-1. Volatilities
-   `GET /volatilities/{base_symbol}/{target_symbol}`
+The service provides a REST API with two endpoints.
 
 #### Prices Endpoint
 
@@ -86,7 +86,7 @@ GET http://localhost:3000/prices/btc/eth
 
 #### Volatilities Endpoint
 
-`GET /volatilities/{base_symbol}/{target_symbol}`
+`GET /volatilities/{base_symbol}/{target_symbol}`  
 
 **Parameters:**
 
@@ -116,15 +116,15 @@ GET http://localhost:3000/volatilities/btc/usd
 The service is configured using environment variables. When running locally, these are loaded from the `.env` file in the root of the repository. The following options are available:
 
 - `PORT`
-  Set the port the web-server will listen on
+  Set the port the web-server will listen on  
   Default: `3000`
 - `COIN_GECKO_API_KEY`
   The API Key to use when calling CoinGecko APIs
 - `CRYPTO_EXCHANGE_ID`
-  The crypto exchange to get the list of coins to support
+  The crypto exchange to get the list of coins to support  
   Default: `binance`
 - `TIME_WINDOW`
-  The time window over which to store price data specified using [PostgreSQL INTERVAL](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT) format with unserscores instead of spaces.
+  The time window over which to store price data specified using [PostgreSQL INTERVAL](https://www.postgresql.org/docs/current/datatype-datetime.html#DATATYPE-INTERVAL-INPUT) format with unserscores instead of spaces.  
   Default: `24_HOURS`
 
 ## Architecture
@@ -143,7 +143,7 @@ The data sync service is responsible for reading data from the CoinGecko API and
 2. Trigger a refresh of the `std_deviations` view in the database.
 3. Delete stale price data (older than the time window) from the database.
 
-It is a NodeJS application that simply uses `setTimeout` as the schedular.
+It is a NodeJS application that simply uses `setInterval` as the schedular.
 
 **Web server**
 

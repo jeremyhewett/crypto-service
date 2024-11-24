@@ -12,7 +12,7 @@ export async function initialize(): Promise<{ coins: Coin[], currencies: string[
 }
 
 export async function syncPrices(coins: Coin[], currencies: string[]) {
-  console.log('Starting data sync...');
+  console.log(`${new Date().toISOString()} Starting data sync...`);
   const prices = await fetchPrices(coins, currencies);
 
   const priceRows: PriceEntry[] = [];
@@ -25,5 +25,5 @@ export async function syncPrices(coins: Coin[], currencies: string[]) {
   await insertPrices(priceRows);
   await updateStdDeviations();
   await deleteStalePrices();
-  console.log('Data sync complete.');
+  console.log(`${new Date().toISOString()} Data sync complete.`);
 }

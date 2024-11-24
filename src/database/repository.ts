@@ -29,7 +29,7 @@ export async function updateStdDeviations(): Promise<void> {
 }
 
 export async function deleteStalePrices(): Promise<void> {
-  console.log('Deleting stale prices');
+  console.log(`${new Date().toISOString()} Deleting stale prices`);
   const query = `DELETE FROM prices WHERE timestamp < NOW() - INTERVAL '${timeWindow}'`;
   await getConnection().query(query);
 }
